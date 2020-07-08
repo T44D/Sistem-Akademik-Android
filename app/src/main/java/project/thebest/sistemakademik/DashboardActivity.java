@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class DashboardActivity extends MainActivity implements InformationAdapte
     CardView menuNilaiPTS, menuNilaiPAS, menuPresensi;
     Button btnLogout;
     TextView tvNISN, tvNama, tvKelas, tvPesan, tvInformasi, tvInformasiKosong;
+    ImageView imageSetting, imageInfo;
     BounceProgressBar progressBar;
     String nama, nisn, kelas;
     SharedPreferences sharedpreferences;
@@ -137,6 +139,8 @@ public class DashboardActivity extends MainActivity implements InformationAdapte
         menuNilaiPTS = findViewById(R.id.menuNilaiPTS);
         menuNilaiPAS = findViewById(R.id.menuNilaiPAS);
         menuPresensi = findViewById(R.id.menuAbsen);
+        imageSetting = findViewById(R.id.image_setting);
+        imageInfo = findViewById(R.id.image_info);
         rvInfo = findViewById(R.id.rvInformasi);
 
         sharedpreferences = getSharedPreferences(LoginActivity.my_shared_preferences, Context.MODE_PRIVATE);
@@ -154,6 +158,8 @@ public class DashboardActivity extends MainActivity implements InformationAdapte
         containerProfile.setVisibility(View.VISIBLE);
         containerMenu.setVisibility(View.VISIBLE);
         tvInformasi.setVisibility(View.VISIBLE);
+        imageInfo.setVisibility(View.VISIBLE);
+        imageSetting.setVisibility(View.VISIBLE);
 //        tvPesan.setVisibility(View.VISIBLE);
 //        containerPesan.setVisibility(View.VISIBLE);
         btnLogout.setVisibility(View.VISIBLE);
@@ -163,6 +169,23 @@ public class DashboardActivity extends MainActivity implements InformationAdapte
         rvInfo.setLayoutManager(rvLayoutManager);
         horizontalLayout = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.HORIZONTAL, false);
         rvInfo.setLayoutManager(horizontalLayout);
+
+        imageSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
+                intent.putExtra(TAG_NISN, nisn);
+                startActivity(intent);
+            }
+        });
+
+        imageInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this, InfoActivity.class);
+                startActivity(intent);
+            }
+        });
 
         showLoading(false);
     }

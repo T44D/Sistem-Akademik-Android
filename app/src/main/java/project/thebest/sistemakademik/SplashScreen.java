@@ -39,11 +39,12 @@ public class SplashScreen extends MainActivity {
                     intent.putExtra(TAG_NISN, nisn);
                     intent.putExtra(TAG_NAMA, nama);
                     intent.putExtra(TAG_KELAS, kelas);
-                    finish();
                     startActivity(intent);
+                    finish();
                 } else {
                     Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
                     startActivity(intent);
+                    finish();
                 }
             }
         },3000);

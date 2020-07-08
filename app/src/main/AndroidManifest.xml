@@ -17,6 +17,14 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".InfoActivity"
+            android:parentActivityName=".DashboardActivity"
+            android:theme="@style/SubAppTheme" />
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".DashboardActivity"
+            android:theme="@style/SubAppTheme" />
+        <activity
             android:name=".RiwayatPresensiActivity"
             android:parentActivityName=".TahunActivity"
             android:theme="@style/SubAppTheme" />

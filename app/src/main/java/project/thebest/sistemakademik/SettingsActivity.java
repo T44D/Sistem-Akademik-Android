@@ -1,17 +1,18 @@
 package project.thebest.sistemakademik;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -20,6 +21,7 @@ import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.rocko.bpb.BounceProgressBar;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,66 +29,45 @@ import java.util.Map;
 import project.thebest.sistemakademik.app.AppController;
 import project.thebest.sistemakademik.util.Server;
 
-import org.rocko.bpb.BounceProgressBar;
+import static project.thebest.sistemakademik.DashboardActivity.TAG_NISN;
 
-public class LoginActivity extends AppCompatActivity {
-    Button btnLogin;
-    EditText etNISN, etPassword;
+public class SettingsActivity extends AppCompatActivity {
+    Button btnChange;
+    EditText etLama, etBaru;
     BounceProgressBar progressBar;
 
+    String nisn;
     int success;
 
-    private String url = Server.URL + "login.php";
-
-    private static final String TAG = LoginActivity.class.getSimpleName();
+    private String url = Server.URL + "change_password.php";
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_MESSAGE = "message";
-    public final static String TAG_NISN = "nisn";
-    public final static String TAG_NAMA = "nama";
-    public final static String TAG_KELAS = "kelas";
 
     String tag_json_obj = "json_obj_req";
 
-    SharedPreferences sharedpreferences;
-    Boolean session = false;
-    String nisn, nama, kelas;
-    public static final String my_shared_preferences = "my_shared_preferences";
-    public static final String session_status = "session_status";
+    private static final String TAG = SettingsActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_settings);
+        setTitle(Html.fromHtml("<font color='#e4f9ff'>Ganti Kata Sandi</font>"));
+        progressBar = findViewById(R.id.progressBarSetting);
+        etLama = findViewById(R.id.et_sandi_lama);
+        etBaru = findViewById(R.id.et_sandi_baru);
+        btnChange = findViewById(R.id.buttonGanti);
 
-        btnLogin = findViewById(R.id.buttonLogin);
-        etNISN = findViewById(R.id.et_nis);
-        etPassword = findViewById(R.id.et_katasandi);
-        progressBar = findViewById(R.id.progressBarLogin);
+        nisn = getIntent().getStringExtra(TAG_NISN);
 
-        sharedpreferences = getSharedPreferences(my_shared_preferences, Context.MODE_PRIVATE);
-        session = sharedpreferences.getBoolean(session_status, false);
-        nisn = sharedpreferences.getString(TAG_NISN, null);
-        nama = sharedpreferences.getString(TAG_NAMA, null);
-        kelas = sharedpreferences.getString(TAG_KELAS, null);
-
-        if (session) {
-            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-            intent.putExtra(TAG_NISN, nisn);
-            intent.putExtra(TAG_NAMA, nama);
-            intent.putExtra(TAG_KELAS, kelas);
-            finish();
-            startActivity(intent);
-        }
-
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        btnChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nisn = etNISN.getText().toString();
-                String password = etPassword.getText().toString();
+                String lama = etLama.getText().toString();
+                String baru = etBaru.getText().toString();
 
-                if (nisn.trim().length() > 0 && password.trim().length() > 0) {
-                    if (isNetworkAvailable(LoginActivity.this)) {
-                        checkLogin(nisn, password);
+                if (lama.trim().length() > 0 && baru.trim().length() > 0) {
+                    if (isNetworkAvailable(SettingsActivity.this)) {
+                        check(nisn, lama, baru);
                     } else {
                         Toast.makeText(getApplicationContext(), "Tidak Ada Koneksi Internet", Toast.LENGTH_LONG).show();
                     }
@@ -98,43 +79,28 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void checkLogin(final String nisn, final String password) {
+    private void check(final String nisn, final String lama, final String baru) {
         showLoading(true);
         StringRequest strReq = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e(TAG, "Login Response: " + response);
+                Log.e(TAG, "Response: " + response);
                 showLoading(false);
                 try {
                     JSONObject jObj = new JSONObject(response);
                     success = jObj.getInt(TAG_SUCCESS);
 
                     if (success == 1) {
-                        String nisn = jObj.getString(TAG_NISN);
-                        String nama = jObj.getString(TAG_NAMA);
-                        String kelas = jObj.getString(TAG_KELAS);
-
-                        Log.e("Berhasil Login!", jObj.toString());
+                        Log.e("Berhasil Diganti!", jObj.toString());
 
                         Toast.makeText(getApplicationContext(), jObj.getString(TAG_MESSAGE), Toast.LENGTH_LONG).show();
 
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
-                        editor.putBoolean(session_status, true);
-                        editor.putString(TAG_NISN, nisn);
-                        editor.putString(TAG_NAMA, nama);
-                        editor.putString(TAG_KELAS, kelas);
-                        editor.apply();
-
-                        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                        intent.putExtra(TAG_NISN, nisn);
-                        intent.putExtra(TAG_NAMA, nama);
-                        intent.putExtra(TAG_KELAS, kelas);
-                        finish();
+                        Intent intent = new Intent(SettingsActivity.this, DashboardActivity.class);
                         startActivity(intent);
+                        finish();
                     } else {
                         Toast.makeText(getApplicationContext(),
                                 jObj.getString(TAG_MESSAGE), Toast.LENGTH_LONG).show();
-
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -143,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
+                Log.e(TAG, "Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_LONG).show();
                 showLoading(false);
@@ -153,11 +119,11 @@ public class LoginActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("nisn", nisn);
-                params.put("password", password);
+                params.put("kata_sandi_lama", lama);
+                params.put("kata_sandi_baru", baru);
                 return params;
             }
         };
-
         AppController.getInstance().addToRequestQueue(strReq, tag_json_obj);
     }
 
