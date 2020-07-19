@@ -53,7 +53,7 @@ public class NilaiActivity extends AppCompatActivity implements NilaiPASAdapter.
 
     String nisn, kelas, tipe;
 
-    TextView tvKosong, np, npt, prednp, prednpt, np1, np2, np3, np4, np5, nk1, nk2, nk3, nk4, nk5, pts;
+    TextView tvKosong, np, npt, prednp, prednpt, descnp, descnpt, np1, np2, np3, np4, np5, nk1, nk2, nk3, nk4, nk5, pts;
 
     Spinner spinnerNilai;
 
@@ -167,8 +167,10 @@ public class NilaiActivity extends AppCompatActivity implements NilaiPASAdapter.
 
             np = view.findViewById(R.id.nilai_np);
             prednp = view.findViewById(R.id.pred_nilai_np);
+            descnp = view.findViewById(R.id.desc_nilai_np);
             npt = view.findViewById(R.id.nilai_npt);
             prednpt = view.findViewById(R.id.pred_nilai_npt);
+            descnpt = view.findViewById(R.id.desc_nilai_npt);
 
             spinnerNilai.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -272,11 +274,13 @@ public class NilaiActivity extends AppCompatActivity implements NilaiPASAdapter.
                             int id = data.getInt("id");
                             int np = data.getInt("np");
                             String pred_np = data.getString("predikat_np");
+                            String desc_np = data.getString("deskripsi_np");
                             int npt = data.getInt("npt");
                             String pred_npt = data.getString("predikat_npt");
+                            String desc_npt = data.getString("deskripsi_npt");
                             String mapel = data.getString("mapel");
 
-                            nilaiPASList.add(new NilaiPAS(id, np, pred_np, npt, pred_npt, mapel));
+                            nilaiPASList.add(new NilaiPAS(id, np, pred_np, desc_np, npt, pred_npt, desc_npt, mapel));
                         }
                         tvKosong.setVisibility(View.GONE);
                         rvNilai.setVisibility(View.VISIBLE);
@@ -335,8 +339,10 @@ public class NilaiActivity extends AppCompatActivity implements NilaiPASAdapter.
             NilaiPAS clickedItem = nilaiPASList.get(position);
             np.setText(String.valueOf(clickedItem.getNp()));
             prednp.setText(clickedItem.getNp_predikat());
+            descnp.setText(clickedItem.getNp());
             npt.setText(String.valueOf(clickedItem.getNpt()));
             prednpt.setText(clickedItem.getNpt_predikat());
+            descnpt.setText(clickedItem.getNpt_desc());
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
         } else {

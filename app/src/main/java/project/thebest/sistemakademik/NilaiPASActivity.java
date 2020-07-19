@@ -54,7 +54,7 @@ public class NilaiPASActivity extends AppCompatActivity implements NilaiPASAdapt
 
     String nisn, kelas;
 
-    TextView tvKosong, np, npt, prednp, prednpt;
+    TextView tvKosong, np, npt, prednp, prednpt, descnp, descnpt;
 
     Spinner spinnerPAS;
 
@@ -104,8 +104,10 @@ public class NilaiPASActivity extends AppCompatActivity implements NilaiPASAdapt
 
         np = view.findViewById(R.id.nilai_np);
         prednp = view.findViewById(R.id.pred_nilai_np);
+        descnp = view.findViewById(R.id.desc_nilai_np);
         npt = view.findViewById(R.id.nilai_npt);
         prednpt = view.findViewById(R.id.pred_nilai_npt);
+        descnpt = view.findViewById(R.id.desc_nilai_npt);
         tvKosong = findViewById(R.id.text_nilaipas_kosong);
         rvNilai = findViewById(R.id.rvNilaiPAS);
         spinnerPAS = findViewById(R.id.spinnerPAS);
@@ -212,11 +214,13 @@ public class NilaiPASActivity extends AppCompatActivity implements NilaiPASAdapt
                             int id = data.getInt("id");
                             int np = data.getInt("np");
                             String pred_np = data.getString("predikat_np");
+                            String desc_np = data.getString("deskripsi_np");
                             int npt = data.getInt("npt");
                             String pred_npt = data.getString("predikat_npt");
+                            String desc_npt = data.getString("deskripsi_npt");
                             String mapel = data.getString("mapel");
 
-                            nilaiList.add(new NilaiPAS(id, np, pred_np, npt, pred_npt, mapel));
+                            nilaiList.add(new NilaiPAS(id, np, pred_np, desc_np, npt, pred_npt, desc_npt, mapel));
                         }
                         tvKosong.setVisibility(View.GONE);
                         rvNilai.setVisibility(View.VISIBLE);
@@ -254,8 +258,10 @@ public class NilaiPASActivity extends AppCompatActivity implements NilaiPASAdapt
         NilaiPAS clickedItem = nilaiList.get(position);
         np.setText(String.valueOf(clickedItem.getNp()));
         prednp.setText(clickedItem.getNp_predikat());
+        descnp.setText(clickedItem.getNp());
         npt.setText(String.valueOf(clickedItem.getNpt()));
         prednpt.setText(clickedItem.getNpt_predikat());
+        descnpt.setText(clickedItem.getNpt_desc());
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
     }
